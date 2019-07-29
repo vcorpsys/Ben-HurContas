@@ -1,0 +1,11 @@
+{
+  "background_color": "#FFF",
+  "display": "standalone",
+  "name": "SheHur Contas",
+  "short_name": "SheHur Contas",
+  "version": "com.benhur.contas",
+  "description": "Controle de gastos pessoais da Sheila e do Ben-Hur.",
+  "author": "Ben-Hur Varriano",
+  "icons": [],
+  "start_url": "index.html"
+}

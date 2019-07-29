@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="format-detection" content="telephone=no">
+        <meta name="msapplication-tap-highlight" content="no">
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+        <meta charset="utf-8">
+        <title>Estatísticas</title>
+
+        <link rel="stylesheet" href="bootstrap4/bootstrap.min.css">
+        <script src="bootstrap4/jquery.min.js"></script>
+        <script src="bootstrap4/popper.min.js"></script>
+        <script src="bootstrap4/bootstrap.min.js"></script>
+    </head>
+    <body>
+
+        <nav class="navbar navbar-expand-md bg-dark navbar-dark">
+          <a class="navbar-brand" href="index.html" onclick="colore(this)">SheHur Contas</a>
+
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+
+          <div class="collapse navbar-collapse" id="collapsibleNavbar">
+            <ul class="navbar-nav">
+              <li class="nav-item" onclick="colore(this)">
+                <a class="nav-link text-white" href="obrigacoes.html">Obrigações</a>
+              </li>
+              <li class="nav-item" onclick="colore(this)">
+                <a class="nav-link text-white" href="entradas.html">Entradas</a>
+              </li>
+              <li class="nav-item" onclick="colore(this)">
+                <a class="nav-link text-white" href="saidas.html">Saídas</a>
+              </li>
+              <li class="nav-item" onclick="colore(this)">
+                <a class="nav-link text-white" href="estatisticas.html">Estatísticas</a>
+              </li>
+            </ul>
+          </div>
+
+        </nav>
+
+        <div style="padding: 10px;"> 
+          <h2 class="text-dark">Estatísticas</h2>
+
+          <table class="table">
+            <tbody>
+              <tr class="table-danger">
+                <td>Menor Entrada:</td>
+                <td id="minimo" align="right">R$ 0</td>
+              </tr>
+              <tr class="table-success">
+                <td>Maior Entrada:</td>
+                <td id="maximo" align="right">R$ 0</td>
+              </tr>
+              <tr class="table-warning">
+                <td>Média Diária:</td>
+                <td id="media" align="right">R$ 0</td>
+              </tr>
+              <tr class="table-primary">
+                <td>Média Desejada:</td>
+                <td id="desejo" align="right">R$ 0</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <strong><div id="abaixo" class="bg-danger text-white" style="padding: 10px; width: 100%; display: none;" align="justify">CUIDADO! Você está ganhando abaixo da média. Se continuar neste rítmo você não conseguirá pagar as suas contas. &#9785;</div></strong>
+          <strong><div id="namedia" class="bg-warning text-dark" style="padding: 10px; width: 100%; display: none;" align="justify">Não há com o quê se preocupar! Se continuar neste rítmo você conseguirá pagar todas as suas contas. &#9889;</div></strong>
+          <strong><div id="acima" class="bg-success text-white" style="padding: 10px; width: 100%; display: none;" align="justify">PARABÉNS!!! Se continuar neste rítmo você conseguirá pagar todas as suas contas e ainda sobrará dinheiro!. &#9749;</div></strong>
+        </div>
+
+        <script type="text/javascript" src="cordova.js"></script>
+        <script type="text/javascript" src="js/estatisticas.js"></script>
+        <script type="text/javascript">
+          function colore(o) {
+            o.style.backgroundColor = '#33353F';
+          }
+
+          var minimo = document.getElementById('minimo');
+          var maximo = document.getElementById('maximo');
+          var media = document.getElementById('media');
+          var desejo = document.getElementById('desejo');
+
+          var abaixo = document.getElementById('abaixo');
+          var namedia = document.getElementById('namedia');
+          var acima = document.getElementById('acima');
+
+          var retornaMinimo = retornaMinimo();
+          var retornaMaximo = retornaMaximo();
+          var retornaMedia = retornaMedia();
+          var retornaMediaDesejada = retornaMediaDesejada();
+
+          minimo.innerText = retornaMinimo;
+          maximo.innerText = retornaMaximo;
+          media.innerText = retornaMedia;
+          desejo.innerText = retornaMediaDesejada;
+
+          retornaMedia = parseFloat(retornaMedia.toString().replace('R$', '').trim());
+          retornaMediaDesejada = parseFloat(retornaMediaDesejada.toString().replace('R$', '').trim());
+          if((retornaMedia > 0)&&(retornaMediaDesejada > 0)) {
+            if(retornaMedia < retornaMediaDesejada) {
+              abaixo.style.display = 'block';
+            }else if(retornaMedia == retornaMediaDesejada) {
+              namedia.style.display = 'block';
+            }else {
+              acima.style.display = 'block';
+            }
+          }
+        </script>
+    </body>
+</html>

@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="format-detection" content="telephone=no">
+        <meta name="msapplication-tap-highlight" content="no">
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+        <meta charset="utf-8">
+        <title>Obrigações</title>
+        <link rel="stylesheet" href="bootstrap4/bootstrap.min.css">
+        <script src="bootstrap4/jquery.min.js"></script>
+        <script src="bootstrap4/popper.min.js"></script>
+        <script src="bootstrap4/bootstrap.min.js"></script>
+
+        <style type="text/css">
+          .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+          }
+
+          .switch input { 
+            opacity: 0;
+            width: 0;
+            height: 0;
+          }
+
+          .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            -webkit-transition: .4s;
+            transition: .4s;
+          }
+
+          .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            -webkit-transition: .4s;
+            transition: .4s;
+          }
+
+          input:checked + .slider {
+            background-color: #2196F3;
+          }
+
+          input:focus + .slider {
+            box-shadow: 0 0 1px #2196F3;
+          }
+
+          input:checked + .slider:before {
+            -webkit-transform: translateX(26px);
+            -ms-transform: translateX(26px);
+            transform: translateX(26px);
+          }
+
+          /* Rounded sliders */
+          .slider.round {
+            border-radius: 34px;
+          }
+
+          .slider.round:before {
+            border-radius: 50%;
+          }         
+        </style>
+    </head>
+    <body>
+
+        <nav class="navbar navbar-expand-md bg-dark navbar-dark">
+          <a class="navbar-brand" href="index.html" onclick="colore(this)">SheHur Contas</a>
+
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+
+          <div class="collapse navbar-collapse" id="collapsibleNavbar">
+            <ul class="navbar-nav">
+              <li class="nav-item" onclick="colore(this)">
+                <a class="nav-link text-white" href="obrigacoes.html">Obrigações</a>
+              </li>
+              <li class="nav-item" onclick="colore(this)">
+                <a class="nav-link text-white" href="entradas.html">Entradas</a>
+              </li>
+              <li class="nav-item" onclick="colore(this)">
+                <a class="nav-link text-white" href="saidas.html">Saídas</a>
+              </li>
+              <li class="nav-item" onclick="colore(this)">
+                <a class="nav-link text-white" href="estatisticas.html">Estatísticas</a>
+              </li>
+            </ul>
+          </div>
+
+        </nav>
+
+        <div style="padding: 10px;">
+          <button type="button" class="btn btn-success float-right" data-toggle="modal" data-target="#myModal" onclick="preparaCadastro()">Cadastrar&#x2b;</button>
+          <button type="button" class="btn btn-warning text-dark float-right" data-toggle="modal" data-target="#myRec">Recuperar</button>
+          <button type="button" class="btn btn-danger float-right" data-toggle="modal" data-target="#myDel">Limpar</button><br>
+
+          <h2 class="text-danger">Obrigações</h2>
+          <strong><div id="total" class="bg-danger text-white" style="padding: 0 5px 0 5px; width: 100%;" align="right">TOTAL: R$ 0</div></strong><br><br>
+
+          <div style="overflow: auto; height: 365px;">
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th>Pago</th>
+                  <th>Nome</th>
+                  <th>R$</th>
+                  <th>Opera.</th>
+                </tr>
+              </thead>
+              <tbody id="linhas">
+
+              </tbody>
+            </table>            
+          </div>
+
+        </div>
+
+        <div class="modal fade" id="myModal">
+          <div class="modal-dialog">
+            <div class="modal-content">
+
+              <div class="modal-header">
+                <h4 class="modal-title">Nova Obrigação</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+              </div>
+
+              <div class="modal-body">
+                <div class="form-group">
+                  <label for="nome">Nome</label>
+                  <input type="text" class="form-control" id="nome">
+                </div>
+                <div class="form-group">
+                  <label for="valor">R$ Valor</label>
+                  <input type="number" class="form-control" id="valor">
+                </div>
+              </div>
+
+              <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-success" data-dismiss="modal" onclick="cadastrar()">Cadastrar</button>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <div class="modal fade" id="myDel">
+          <div class="modal-dialog">
+            <div class="modal-content">
+
+              <div class="modal-header">
+                <h4 class="modal-title">EXCLUSÃO</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+              </div>
+
+              <div class="modal-body">
+                <p class="text-danger"><strong>Confirma a DELEÇÃO da LISTA de OBRIGAÇÕES?</strong></p>
+              </div>
+
+              <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="deletar()">Limpar</button>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <div class="modal fade" id="modalEditar">
+          <div class="modal-dialog">
+            <div class="modal-content">
+
+              <div class="modal-header">
+                <h4 class="modal-title">Editar Obrigação</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+              </div>
+
+              <div class="modal-body">
+                <input type="hidden" class="form-control" id="eid" value="-1">
+                <div class="form-group">
+                  <label for="enome">Nome</label>
+                  <input type="text" class="form-control" id="enome">
+                </div>
+                <div class="form-group">
+                  <label for="evalor">R$ Valor</label>
+                  <input type="number" class="form-control" id="evalor">
+                </div>
+              </div>
+
+              <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-warning" data-dismiss="modal" onclick="editar()">Editar</button>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <div class="modal fade" id="modalDeletar">
+          <div class="modal-dialog">
+            <div class="modal-content">
+
+              <div class="modal-header">
+                <h4 class="modal-title">EXCLUSÃO</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+              </div>
+
+              <div class="modal-body">
+                <input type="hidden" class="form-control" id="did" value="-1">
+                <p class="text-danger"><strong>Confirma a DELEÇÃO da OBRIGAÇÃO <span id="obrigacao"></span>?</strong></p>
+              </div>
+
+              <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="deletarUM()">Deletar</button>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <div class="modal fade" id="myRec">
+          <div class="modal-dialog">
+            <div class="modal-content">
+
+              <div class="modal-header">
+                <h4 class="modal-title">RECUPERAÇÃO</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+              </div>
+
+              <div class="modal-body">
+                <p class="text-dark"><strong>Confirma a RECUPERAÇÃO dos DADOS da LISTA de OBRIGAÇÕES?</strong></p>
+              </div>
+
+              <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-warning text-dark" data-dismiss="modal" onclick="recuperarDados()">Recuperar</button>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <script type="text/javascript" src="cordova.js"></script>
+        <script type="text/javascript" src="js/index.js"></script>
+        <script type="text/javascript" src="js/obrigacoes.js"></script>
+        <script type="text/javascript">
+          function colore(o) {
+            o.style.backgroundColor = '#33353F';
+          }
+        </script>
+    </body>
+</html>

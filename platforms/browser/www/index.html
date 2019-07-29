@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="format-detection" content="telephone=no">
+        <meta name="msapplication-tap-highlight" content="no">
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+        <meta charset="utf-8">
+        <title>SheHur Contas</title>
+
+        <link rel="stylesheet" href="bootstrap4/bootstrap.min.css">
+        <script src="bootstrap4/jquery.min.js"></script>
+        <script src="bootstrap4/popper.min.js"></script>
+        <script src="bootstrap4/bootstrap.min.js"></script>
+
+        <script src="chartjs/Chart.bundle.js"></script>
+        <script src="chartjs/Chart.bundle.min.js"></script>
+        <script src="chartjs/Chart.js"></script>
+        <script src="chartjs/Chart.min.js"></script>
+
+    </head>
+    <body>
+
+        <nav class="navbar navbar-expand-md bg-dark navbar-dark">
+          <a class="navbar-brand" href="index.html" onclick="colore(this)">SheHur Contas</a>
+
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+
+          <div class="collapse navbar-collapse" id="collapsibleNavbar">
+            <ul class="navbar-nav">
+              <li class="nav-item" onclick="colore(this)">
+                <a class="nav-link text-white" href="obrigacoes.html">Obrigações</a>
+              </li>
+              <li class="nav-item" onclick="colore(this)">
+                <a class="nav-link text-white" href="entradas.html">Entradas</a>
+              </li>
+              <li class="nav-item" onclick="colore(this)">
+                <a class="nav-link text-white" href="saidas.html">Saídas</a>
+              </li>
+              <li class="nav-item" onclick="colore(this)">
+                <a class="nav-link text-white" href="estatisticas.html">Estatísticas</a>
+              </li>
+            </ul>
+          </div>
+
+        </nav>
+
+        <div style="padding: 10px;">  
+
+          <div style="width: 100%">
+            <canvas id="myChart" width="400" height="400"></canvas>
+          </div>
+
+          <br>
+
+          <table class="table">
+            <tbody>
+              <tr class="table-danger">
+                <td>Obrigações:</td>
+                <td id="totalO" align="right">R$ 0</td>
+              </tr>
+              <tr class="table-success">
+                <td>Entradas:</td>
+                <td id="totalE" align="right">R$ 0</td>
+              </tr>
+              <tr class="table-warning">
+                <td>Restante:</td>
+                <td id="totalR" align="right">R$ 0</td>
+              </tr>
+            </tbody>
+          </table>
+          <div width="100%" align="right" class="text-success" id="lucro" style="display: none;">LUCRO: R$ 0</div>
+        </div>
+        <script>
+          var totalO = document.getElementById('totalO');
+          var totalE = document.getElementById('totalE');
+          var totalR = document.getElementById('totalR');
+          var lucro = document.getElementById('lucro');
+
+          var retornaEntradas = retornaEntradas();
+          var retornaObrigacoes = retornaObrigacoes();
+          var retornaSaidas = retornaSaidas();
+
+          totalO.innerText = 'R$ ' + retornaObrigacoes;
+          totalE.innerText = 'R$ ' + retornaEntradas;
+
+          var Restante = parseFloat(retornaObrigacoes)-(parseFloat(retornaEntradas-parseFloat(retornaSaidas)));
+          Restante = Restante.toFixed(2);
+          if(Restante <= 0)
+            totalR.innerText = 'OBJETIVO CONCLUÍDO';
+          else
+            totalR.innerText = 'R$ ' + Math.abs(Restante);
+
+          if(Restante < 0) {
+            lucro.innerText = 'LUCRO: R$ ' + Math.abs(Restante);
+            lucro.style.display = 'block';
+          }
+
+          function retornaObrigacoes() {
+            var soma = 0;
+            var objJSON = [];
+            var banco = localStorage.getItem("shehur-contas-obrigacoes");
+            if(banco) {
+              objJSON = JSON.parse(banco.toString());
+            }
+
+            objJSON.forEach((item) => {
+              if(item.Valor.toString().trim().length <= 0)
+                item.Valor = 0;
+              var marcacao = parseInt(item.Marcado);
+              if(marcacao <= 0) soma += parseFloat(item.Valor);
+            });
+            soma = Math.abs(soma);
+            soma = soma.toFixed(2);
+            return soma;
+          }
+
+          function retornaEntradas() {
+            var soma = 0;
+            var objJSON = [];
+            var banco = localStorage.getItem("shehur-contas-entradas");
+            if(banco) {
+              objJSON = JSON.parse(banco.toString());
+            }
+
+            objJSON.forEach((item) => {
+              if(item.Valor.toString().trim().length <= 0)
+                item.Valor = 0;
+              soma += parseFloat(item.Valor);
+            });
+            soma = Math.abs(soma);
+            soma = soma.toFixed(2);
+            return soma;
+          }
+
+          function retornaSaidas() {
+            var soma = 0;
+            var objJSON = [];
+            var banco = localStorage.getItem("shehur-contas-saidas");
+            if(banco) {
+              objJSON = JSON.parse(banco.toString());
+            }
+
+            objJSON.forEach((item) => {
+              if(item.Valor.toString().trim().length <= 0)
+                item.Valor = 0;
+              soma += parseFloat(item.Valor);
+            });
+            soma = Math.abs(soma);
+            soma = soma.toFixed(2);
+            return soma;
+          }
+
+          function retornaLabel() {
+            var label = 'Entradas';
+            if(retornaSaidas > 0) label = 'Entradas - Saídas';
+            else label = 'Entradas';
+            label = label.toString().trim();
+            return label;
+          }
+
+          var ctx = document.getElementById("myChart");
+          var myChart = new Chart(ctx, {
+              type: 'bar',
+              data: {
+                  labels: ["Obrigações", retornaLabel()],
+                  datasets: [{
+                      label: 'Obrigações',
+                      data: [retornaObrigacoes, retornaEntradas - retornaSaidas],
+                      backgroundColor: [
+                          'rgba(255, 99, 132, 1)',
+                          'rgba(75, 192, 192, 1)',
+                      ],
+                      borderColor: [
+                          'rgba(255, 99, 132, 1)',
+                          'rgba(75, 192, 192, 1)',
+                      ],
+                      borderWidth: 1
+                  }]
+              },
+              options: {
+                  scales: {
+                      yAxes: [{
+                          ticks: {
+                              beginAtZero: true
+                          }
+                      }]
+                  }
+              }
+          });
+        </script>
+
+        <script type="text/javascript" src="cordova.js"></script>
+        <script type="text/javascript" src="js/index.js"></script>
+        <script type="text/javascript">
+          function colore(o) {
+            o.style.backgroundColor = '#33353F';
+          }
+        </script>
+    </body>
+</html>
