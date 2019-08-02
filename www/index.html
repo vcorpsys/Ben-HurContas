@@ -52,9 +52,7 @@
             <canvas id="myChart" width="400" height="400"></canvas>
           </div>
 
-          <br>
-
-          <table class="table">
+          <table class="table" style="font-size: 10px;">
             <tbody>
               <tr class="table-danger">
                 <td>Obrigações:</td>
@@ -100,7 +98,7 @@
           function retornaObrigacoes() {
             var soma = 0;
             var objJSON = [];
-            var banco = localStorage.getItem("shehur-contas-obrigacoes");
+            var banco = localStorage.getItem("ben-hur-contas-obrigacoes");
             if(banco) {
               objJSON = JSON.parse(banco.toString());
             }
@@ -119,7 +117,7 @@
           function retornaEntradas() {
             var soma = 0;
             var objJSON = [];
-            var banco = localStorage.getItem("shehur-contas-entradas");
+            var banco = localStorage.getItem("ben-hur-contas-entradas");
             if(banco) {
               objJSON = JSON.parse(banco.toString());
             }
@@ -137,7 +135,7 @@
           function retornaSaidas() {
             var soma = 0;
             var objJSON = [];
-            var banco = localStorage.getItem("shehur-contas-saidas");
+            var banco = localStorage.getItem("ben-hur-contas-saidas");
             if(banco) {
               objJSON = JSON.parse(banco.toString());
             }
